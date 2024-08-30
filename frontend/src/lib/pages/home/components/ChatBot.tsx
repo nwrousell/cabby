@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { Box, VStack, Input, Text, Flex, IconButton } from '@chakra-ui/react';
+import { Box, VStack, Input, Text, Flex, IconButton, Spinner } from '@chakra-ui/react';
 import { IoSend } from "react-icons/io5";
 
-const ChatMessage = ({ message, isUser }) => (
+
+const ChatMessage = ({ message, isUser, isLoading=false }) => (
     <Box
         bg={isUser ? 'brand.700' : 'brand.800'}
         color="white"
@@ -12,26 +13,33 @@ const ChatMessage = ({ message, isUser }) => (
         alignSelf={isUser ? 'flex-end' : 'flex-start'}
         mb={2}
     >
-        <Text>{message}</Text>
+        { isLoading ? <Spinner mx='36' my='3' /> : <Text>{message}</Text>}
     </Box>
 )
 
+type Message = {
+    text: string
+    role: 'user' | 'assistant'
+}
+
 export default function ChatBot() {
-    const [messages, setMessages] = useState([
-        { text: "Hello! I'm your colorful chatbot. How can I brighten your day?", isUser: false },
-    ]);
-    const [input, setInput] = useState('');
+    const [messages, setMessages] = useState<Message[]>([
+        { text: "Hello, I'm Cabby! You can talk to me about courses at Brown. I have access to CAB, Critical Review (and Bulletin soon). What can I help you with today?", role: 'user' },
+    ])
+
+    const [input, setInput] = useState('')
+    const [waitingOnResponse, setWaitingOnResponse] = useState(false)
 
     const handleSend = () => {
-        if (input.trim()) {
-            setMessages([...messages, { text: input, isUser: true }]);
-            // Simulated bot response
+        if (!waitingOnResponse && input.trim()) {
+            setMessages([...messages, { text: input, role: 'user' }]);
+
+            setWaitingOnResponse(true)
             setTimeout(() => {
-                setMessages(prev => [...prev, {
-                    text: `Thanks for your message: "${input}"! I'm just a demo, but I'm here to make your UI colorful!`,
-                    isUser: false
-                }]);
-            }, 1000);
+                setMessages((msgs) => [...msgs, { text: 'hi.', role: 'assistant' }])
+                setWaitingOnResponse(false)
+            }, 3000)
+            
             setInput('')
         }
     }
@@ -50,8 +58,11 @@ export default function ChatBot() {
                 }}
             >
                 {messages.map((message, index) => (
-                    <ChatMessage key={index} message={message.text} isUser={message.isUser} />
+                    <ChatMessage key={index} message={message.text} isUser={message.role == 'user'} />
                 ))}
+
+                { waitingOnResponse && <ChatMessage message={''} isUser={false} isLoading /> }
+
             </VStack>
 
             <Flex p={4} flex={0} bg="brand.800">
@@ -64,7 +75,8 @@ export default function ChatBot() {
                 />
                 <IconButton
                     onClick={handleSend}
-                    colorScheme='blue'
+                    disabled={waitingOnResponse}
+                    colorScheme={'blue'}
                     icon={<IoSend />} 
                     aria-label={'Send Button'}                
                 />
