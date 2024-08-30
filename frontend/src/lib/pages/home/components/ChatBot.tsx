@@ -65,7 +65,7 @@ export default function ChatBot() {
 
             </VStack>
 
-            <Flex p={4} flex={0} bg="brand.800">
+            <Flex p={4} flex={0} bg="brand.800" borderRadius={'6'}>
                 <Input
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
@@ -76,7 +76,7 @@ export default function ChatBot() {
                 <IconButton
                     onClick={handleSend}
                     disabled={waitingOnResponse}
-                    colorScheme={'blue'}
+                    colorScheme={waitingOnResponse ? 'gray' : 'blue'}
                     icon={<IoSend />} 
                     aria-label={'Send Button'}                
                 />

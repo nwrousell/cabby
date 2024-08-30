@@ -8,6 +8,8 @@ import checker from 'vite-plugin-checker';
 import type { VitePWAOptions } from 'vite-plugin-pwa';
 import { VitePWA } from 'vite-plugin-pwa';
 import tsconfigPaths from 'vite-tsconfig-paths';
+import eslintPlugin from 'vite-plugin-eslint'
+
 
 const pwaOptions: Partial<VitePWAOptions> = {
     registerType: 'autoUpdate',
@@ -43,6 +45,12 @@ export default defineConfig({
         tsconfigPaths(),
         visualizer({ template: 'sunburst' }) as unknown as PluginOption,
         VitePWA(pwaOptions),
+        eslintPlugin({
+            emitWarning: true,  // Emit warnings instead of errors
+            emitError: false,   // Don't emit errors to prevent build failure
+            failOnWarning: false, // Don't fail the build on warnings
+            failOnError: false,   // Don't fail the build on errors
+        })
     ],
     server: {
         open: true,
