@@ -10,7 +10,6 @@ import { VitePWA } from 'vite-plugin-pwa';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import eslintPlugin from 'vite-plugin-eslint'
 
-
 const pwaOptions: Partial<VitePWAOptions> = {
     registerType: 'autoUpdate',
     manifest: {
