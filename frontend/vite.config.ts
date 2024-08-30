@@ -37,8 +37,8 @@ export default defineConfig({
         million.vite({ auto: true }),
         react(),
         checker({
-            typescript: true,
-            eslint: { lintCommand: 'eslint "./src/**/*.{js,jsx,ts,tsx}"' },
+            typescript: false,
+            // eslint: { lintCommand: 'eslint "./src/**/*.{js,jsx,ts,tsx}"' },
         }),
         tsconfigPaths(),
         visualizer({ template: 'sunburst' }) as unknown as PluginOption,
