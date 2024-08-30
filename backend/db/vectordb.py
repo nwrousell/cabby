@@ -10,7 +10,10 @@ load_dotenv()
 
 client = OpenAI()
 
-# a vector database that uses numpy and json files
+"""
+A vector database that uses numpy and json files
+"""
+
 class VectorDatabase:
     embedding_dimension = 1536 # dimension for openai's text-embedding-3-small model
     
@@ -30,8 +33,7 @@ class VectorDatabase:
             self.save_db()
     
     '''
-    Uses str_func to turn each document to a string, embeds that string,
-    and adds the documents and their embeddings to the database
+    Uses str_func to turn each document to a string, embeds that string, and adds the documents and their embeddings to the database
     '''
     def add_documents(self, documents: list, str_func = None):
         print(f'adding {len(documents)} documents to database...')
@@ -63,16 +65,17 @@ class VectorDatabase:
     '''
     Performs cosine similarity of embedding to vectors in db and returns top k most-similar documents
     '''
-    def retrieve_top_k(self, embedding: list[float], k: int = 5):
+    def retrieve_top_k(self, embedding: list[float], k: int = 15, threshold: float = 0.4):
         embedding = np.array(embedding)
         embedding_magnitude = np.sum(embedding ** 2)
         embeddings_magnitudes = np.sum(self.embeddings ** 2, axis=-1)
         cosine_similarities = np.dot(self.embeddings, embedding) / (embedding_magnitude * embeddings_magnitudes)
-        
-        top_k_indices = np.argsort(cosine_similarities)[-k:]
-        # top_k_scores = cosine_similarities[top_k_indices]
-        top_k_documents = list(map(lambda i: self.documents[i], top_k_indices))
-
+        filtered_cosine_similarities = cosine_similarities >= threshold
+        top_k_indices = np.argsort(filtered_cosine_similarities)[-k:]
+        top_k_scores = cosine_similarities[top_k_indices]
+        new_k = sum(top_k_scores >= threshold)
+        top_k_documents = list(map(lambda i: self.documents[i], top_k_indices[-new_k:]))
+        print(top_k_indices, new_k)
         return top_k_documents        
     
 
