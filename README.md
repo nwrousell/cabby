@@ -4,9 +4,6 @@
 - [X] Scrape Critical Review
 - [ ] Scrape each concetration on bulletin with an LLM
 
-
-- Use cases & determine how to chunk
-- Embed/upsert  everything
-- Simple agent
+- Use cases
 - Frontend for chatbot
 - course plan SAT checker
