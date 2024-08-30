@@ -57,4 +57,14 @@ export default defineConfig({
     esbuild: {
         logLevel: 'silent', // Suppress warnings
     },
+    build: {
+        rollupOptions: {
+            onwarn(warning, warn) {
+                if (warning.code === 'PLUGIN_WARNING' && warning.plugin === 'prettier') {
+                    return;
+                }
+                warn(warning);
+            },
+        },
+    },
 });
